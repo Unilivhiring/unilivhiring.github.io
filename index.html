@@ -944,13 +944,15 @@ function candDrawer(id){var c=candOf(id);if(!c)return;var rq=findReq(c.reqId)||{
 function drwScreen(){var skills=[].map.call(document.querySelectorAll('[data-sk]'),function(x){return x.classList.contains('on')});
   return{skills:skills,rating:Number($('cd-rt')?$('cd-rt').value:0)||'',notes:$('cd-nt')?$('cd-nt').value:''}}
 function drwAct(id,a){api('api_screenSave',[TK,id,drwScreen(),a,''],function(){dclose();
-  toast(a==='SHORTLIST'?'Shortlisted':'Parked',a==='SHORTLIST'?'The requester was notified to review.':'In the talent pool.','good');refresh()})}
+  toast(a==='SHORTLIST'?'Shortlisted':'Parked',a==='SHORTLIST'?'The requester was notified to review.':'In the talent pool.','good');refresh()},
+  function(m){toast('Server refused',m,'bad')})}
 function drwReject(id){dlg('<h3>Not a fit — why?</h3><div class="chips" id="rr">'+
   ['Salary','Experience','Location','Shift','No-show','Other'].map(function(x){
     return '<span class="chip2" data-v="'+x+'" onclick="setPick(\'rr\',\''+x+'\');this.classList.add(\'on\')">'+x+'</span>'}).join('')+'</div>',
   '<button class="ghost" onclick="dclose()">Cancel</button><button class="danger" onclick="drwReject2(\''+id+'\')">Reject</button>')}
 function drwReject2(id){var v=getPick('rr');if(!v){toast('One thing','Pick a reason chip.','bad');return}
-  api('api_screenSave',[TK,id,drwScreen(),'REJECT',v],function(){dclose();toast('Rejected','Reason recorded: '+v,'good');refresh()})}
+  api('api_screenSave',[TK,id,drwScreen(),'REJECT',v],function(){dclose();toast('Rejected','Reason recorded: '+v,'good');refresh()},
+   function(m){toast('Server refused the reject',m,'bad')})}
 function drwRelease(id){api('api_release',[TK,id],function(){dclose();toast('Released','Won\'t bounce back to you for 6 hours.','good');refresh()})}
 function stg(id,to){api('api_candStage',[TK,id,to,''],function(){dclose();toast('Moved','Stage: '+to,'good');refresh()},
   function(m){toast('Blocked',m,'bad')})}
@@ -989,7 +991,8 @@ function loopRejectDlg(){dlg('<h3>Not a fit — why?</h3><div class="chips" id="
     return '<span class="chip2" data-v="'+x+'" onclick="setPick(\'lrr\',\''+x+'\');this.classList.add(\'on\')">'+x+'</span>'}).join('')+'</div>',
   '<button class="ghost" onclick="dclose()">Back</button><button class="danger" onclick="loopReject2()">Reject & next</button>')}
 function loopReject2(){var v=getPick('lrr');if(!v){toast('One thing','Pick a reason.','bad');return}
-  dclose();api('api_screenSave',[TK,loopCand.id,loopScreen(),'REJECT',v],function(){toast('✕ Rejected',v,'good');loopNext()})}
+  dclose();api('api_screenSave',[TK,loopCand.id,loopScreen(),'REJECT',v],function(){toast('✕ Rejected',v,'good');loopNext()},
+   function(m){toast('Server refused the reject',m,'bad')})}
 document.addEventListener('keydown',function(e){
   if(e.ctrlKey&&e.key==='Enter'&&loopCand&&$('p-loop').classList.contains('on'))loopAct('SHORTLIST')});
 
@@ -1679,7 +1682,7 @@ api=function(fn,args,ok,fail){
 </script>
 
 <script>
-window.UL_BUILD='v4.9.2';
+window.UL_BUILD='v4.9.3';
 console.log('UniLiv Hiring build',window.UL_BUILD);
 window.addEventListener('error',function(e){
  try{toast('⚠ Something broke','['+window.UL_BUILD+'] '+String(e.message).slice(0,140),'bad')}catch(x){}
@@ -1688,7 +1691,7 @@ window.addEventListener('unhandledrejection',function(e){
  try{toast('⚠ Something broke','['+window.UL_BUILD+'] '+String(e.reason&&e.reason.message||e.reason).slice(0,140),'bad')}catch(x){}
 });
 (function(){var el=document.querySelector('.brand-sub')||document.querySelector('.who');
- if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v4.9.2</span>')})();
+ if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v4.9.3</span>')})();
 </script>
 <script>
 /* ═════════ THEMES — 6 palettes, one tap, remembered per device ═════════ */
