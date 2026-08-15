@@ -655,9 +655,12 @@ function wizFill(r){
   $('wiz-err').classList.remove('on');$('wiz-saved').textContent='';
   $('rep-wrap').style.display=(getPick('f-hire')==='REPLACEMENT')?'grid':'none'}
 function tog(id,on){var e=$(id);e.classList[on?'add':'remove']('on')}
-function setPick(id,v){document.querySelectorAll('#'+id+' .chip2').forEach(function(c){
+function pickScope(){var o=$('dlgo');return (o&&o.classList.contains('on'))?o:document}
+function setPick(id,v){var g=pickScope().querySelector('#'+id)||document.getElementById(id);if(!g)return;
+ g.querySelectorAll('.chip2').forEach(function(c){
   c.classList[c.dataset.v===v?'add':'remove']('on')})}
-function getPick(id){var c=document.querySelector('#'+id+' .chip2.on');return c?c.dataset.v:''}
+function getPick(id){var g=pickScope().querySelector('#'+id)||document.getElementById(id);
+ var c=g?g.querySelector('.chip2.on'):null;return c?c.dataset.v:''}
 function pick(el,gid){document.querySelectorAll('#'+gid+' .chip2').forEach(function(c){c.classList.remove('on')});
   el.classList.add('on');if(gid==='f-hire')$('rep-wrap').style.display=el.dataset.v==='REPLACEMENT'?'grid':'none';wsave()}
 function tagAdd(e,k){if(e.key!=='Enter')return;e.preventDefault();var i=$('f-'+k+'-in'),v=i.value.trim();
@@ -1044,7 +1047,7 @@ function offer2(candId){api('api_offerCreate',[TK,candId,{basic:$('of-b').value,
   other:$('of-o').value,total:$('of-t').value,joining:$('of-j').value,prob:$('of-p').value}],
   function(r){dclose();toast('Offer created',r.above?'⚠ Above band — HR Head must justify to approve.':'Sent for HR Head approval.','good');refresh()},
   function(m){toast('Fix one thing',m,'bad')})}
-function renderOffers(){if(!X||!B.isHR)return;var L=X.offers||[];
+function renderOffers(){if(!X||!B.isHR)return;var L=(X.offers||[]).filter(function(o){return o.status!=='SUPERSEDED'});
   $('off-body').innerHTML=L.length? L.map(function(o){
     var c=candOf(o.candId)||{name:'?'};var rq=findReq(o.reqId)||{};
     var acts='';
@@ -1676,7 +1679,7 @@ api=function(fn,args,ok,fail){
 </script>
 
 <script>
-window.UL_BUILD='v4.9.1';
+window.UL_BUILD='v4.9.2';
 console.log('UniLiv Hiring build',window.UL_BUILD);
 window.addEventListener('error',function(e){
  try{toast('⚠ Something broke','['+window.UL_BUILD+'] '+String(e.message).slice(0,140),'bad')}catch(x){}
@@ -1685,7 +1688,7 @@ window.addEventListener('unhandledrejection',function(e){
  try{toast('⚠ Something broke','['+window.UL_BUILD+'] '+String(e.reason&&e.reason.message||e.reason).slice(0,140),'bad')}catch(x){}
 });
 (function(){var el=document.querySelector('.brand-sub')||document.querySelector('.who');
- if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v4.9.1</span>')})();
+ if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v4.9.2</span>')})();
 </script>
 <script>
 /* ═════════ THEMES — 6 palettes, one tap, remembered per device ═════════ */
