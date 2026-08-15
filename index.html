@@ -420,7 +420,7 @@ function dlg(h,acts){$('dlg').innerHTML=h+'<div class="dlg-acts">'+acts+'</div>'
 function dclose(){$('dlgo').classList.remove('on')}
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){if($('dlgo').classList.contains('on'))dclose();else $('bellp').classList.remove('on')}});
 document.addEventListener('click',function(e){var p=$('bellp');if(p.classList.contains('on')&&!p.contains(e.target)&&!e.target.closest('.iconb'))p.classList.remove('on')});
-var UL_API=''; // optional: hardcode your /exec URL here before hosting
+var UL_API='https://script.google.com/macros/s/AKfycbxUHKzgclUOSkrZJx-WBgMcLL0C0RMlF825mMdq6cL3rWpT8j7m_7lihIHqi5o0Od0aYg/exec'; // optional: hardcode your /exec URL here before hosting
 function apiMode(){return (typeof google!=='undefined'&&google.script&&google.script.run)?'embed':'ext'}
 function apiUrl(){return (UL_API&&UL_API.indexOf('https://')===0)?UL_API:(localStorage.getItem('ul_api')||'')}
 function api(fn,args,ok,fail){
