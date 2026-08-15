@@ -436,7 +436,9 @@ function api(fn,args,ok,fail){
     body:JSON.stringify({fn:fn,args:args||[]})})
    .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json()})
    .then(function(j){if(j&&j.ok)(ok||function(){})(j.r);else onFail((j&&j.e)||'Server error')})
-   .catch(function(e){onFail('Network: '+String(e.message||e))})}
+   .catch(function(e){onFail('Network: '+String(e.message||e));
+     try{engFoot();var f=$('eng-foot');if(f){f.style.color='var(--ember)';
+      f.insertAdjacentHTML('afterbegin','⚠ The engine refused the connection — in Apps Script set the deployment\'s “Who has access” to <b>Anyone</b>, then retry. ')}}catch(x){}})}
 function apiSetup(){
   if($('setup-card'))return;
   $('gate').classList.remove('gone');$('app').style.display='none';
@@ -447,6 +449,16 @@ function apiSetup(){
    '<input id="su-url" placeholder="https://script.google.com/macros/s/…/exec" style="width:100%;margin:12px 0 10px">'+
    '<button class="btn" style="width:100%" onclick="apiSave()">Connect</button>'+
    '<div class="gerr" id="su-err"></div></div></div>')}
+function engFoot(){
+  if(apiMode()!=='ext'||$('eng-foot'))return;
+  var g=$('gate');if(!g)return;
+  var u=apiUrl();
+  g.insertAdjacentHTML('beforeend',
+   '<div id="eng-foot" style="text-align:center;margin-top:14px;font-size:11.5px;color:var(--txt3)">'+
+   (u?('Engine: '+esc(u.slice(0,46))+'… '):'No engine connected ')+
+   '<a style="color:var(--lamp);cursor:pointer" onclick="engReset()">change</a></div>')}
+function engReset(){localStorage.removeItem('ul_api');location.reload()}
+setTimeout(engFoot,900);
 function apiSave(){var v=$('su-url').value.trim();
   if(v.indexOf('https://script.google.com/')!==0||v.indexOf('/exec')<0){
     $('su-err').textContent='That must be the /exec link from Manage deployments.';$('su-err').classList.add('on');return}
@@ -1650,7 +1662,7 @@ api=function(fn,args,ok,fail){
 </script>
 
 <script>
-window.UL_BUILD='v4.6';
+window.UL_BUILD='v4.7';
 console.log('UniLiv Hiring build',window.UL_BUILD);
 window.addEventListener('error',function(e){
  try{toast('⚠ Something broke','['+window.UL_BUILD+'] '+String(e.message).slice(0,140),'bad')}catch(x){}
@@ -1659,7 +1671,7 @@ window.addEventListener('unhandledrejection',function(e){
  try{toast('⚠ Something broke','['+window.UL_BUILD+'] '+String(e.reason&&e.reason.message||e.reason).slice(0,140),'bad')}catch(x){}
 });
 (function(){var el=document.querySelector('.brand-sub')||document.querySelector('.who');
- if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v4.6</span>')})();
+ if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v4.7</span>')})();
 </script>
 <script>
 /* ═════════ THEMES — 6 palettes, one tap, remembered per device ═════════ */
