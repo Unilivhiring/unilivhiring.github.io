@@ -437,7 +437,7 @@ function api(fn,args,ok,fail){
    .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json()})
    .then(function(j){if(j&&j.ok)(ok||function(){})(j.r);else onFail((j&&j.e)||'Server error')})
    .catch(function(e){onFail('Network: '+String(e.message||e));
-     try{engFoot();var f=$('eng-foot');if(f){f.style.color='var(--ember)';
+     try{engFoot(true);var f=$('eng-foot');if(f){f.style.color='var(--ember)';
       f.insertAdjacentHTML('afterbegin','⚠ The engine refused the connection — in Apps Script set the deployment\'s “Who has access” to <b>Anyone</b>, then retry. ')}}catch(x){}})}
 function apiSetup(){
   if($('setup-card'))return;
@@ -449,16 +449,20 @@ function apiSetup(){
    '<input id="su-url" placeholder="https://script.google.com/macros/s/…/exec" style="width:100%;margin:12px 0 10px">'+
    '<button class="btn" style="width:100%" onclick="apiSave()">Connect</button>'+
    '<div class="gerr" id="su-err"></div></div></div>')}
-function engFoot(){
-  if(apiMode()!=='ext'||$('eng-foot'))return;
-  var g=$('gate');if(!g)return;
+function engFoot(show){
+  if(apiMode()!=='ext')return;
+  if(!$('eng-gear'))document.body.insertAdjacentHTML('beforeend',
+   '<div id="eng-gear" onclick="engFoot(true)" title="Engine connection" style="position:fixed;bottom:10px;right:12px;font-size:14px;opacity:.28;cursor:pointer;z-index:60">⚙</div>');
+  if(!show)return;
+  if($('eng-foot')){$('eng-foot').remove()}
   var u=apiUrl();
-  g.insertAdjacentHTML('beforeend',
-   '<div id="eng-foot" style="text-align:center;margin-top:14px;font-size:11.5px;color:var(--txt3)">'+
-   (u?('Engine: '+esc(u.slice(0,46))+'… '):'No engine connected ')+
-   '<a style="color:var(--lamp);cursor:pointer" onclick="engReset()">change</a></div>')}
+  document.body.insertAdjacentHTML('beforeend',
+   '<div id="eng-foot" style="position:fixed;bottom:34px;left:0;right:0;text-align:center;font-size:11.5px;color:var(--txt3);z-index:60">'+
+   (u?('Engine: '+esc(u.slice(0,44))+'… '):'No engine connected ')+
+   '<a style="color:var(--lamp);cursor:pointer" onclick="engReset()">change</a> · '+
+   '<a style="color:var(--txt3);cursor:pointer" onclick="$(\'eng-foot\').remove()">hide</a></div>')}
 function engReset(){localStorage.removeItem('ul_api');location.reload()}
-setTimeout(engFoot,900);
+setTimeout(function(){engFoot(false);if(apiMode()==='ext'&&$('gbtn'))$('gbtn').style.display='none'},600);
 function apiSave(){var v=$('su-url').value.trim();
   if(v.indexOf('https://script.google.com/')!==0||v.indexOf('/exec')<0){
     $('su-err').textContent='That must be the /exec link from Manage deployments.';$('su-err').classList.add('on');return}
@@ -468,7 +472,8 @@ function sessionGone(){TK=null;$('app').style.display='none';$('gate').classList
 
 /* ═════════ gate ═════════ */
 api('api_probe',[],function(p){
-  if(!p.google_available){$('gbtn').disabled=true;$('gbtn-t').innerHTML='Google sign-in unavailable here<small>Use email & password instead</small>'}
+  if(apiMode()==='ext'){$('gbtn').style.display='none'}
+  else if(!p.google_available){$('gbtn').disabled=true;$('gbtn-t').innerHTML='Google sign-in unavailable here<small>Use email & password instead</small>'}
   else if(p.detected_email){$('gbtn-t').innerHTML='Sign in as '+esc(p.detected_email)+
     (p.provisioned?'':'<small>This account isn\'t provisioned — an admin must add it, or use email & password</small>')}
 });
@@ -1662,7 +1667,7 @@ api=function(fn,args,ok,fail){
 </script>
 
 <script>
-window.UL_BUILD='v4.7';
+window.UL_BUILD='v4.8';
 console.log('UniLiv Hiring build',window.UL_BUILD);
 window.addEventListener('error',function(e){
  try{toast('⚠ Something broke','['+window.UL_BUILD+'] '+String(e.message).slice(0,140),'bad')}catch(x){}
@@ -1671,7 +1676,7 @@ window.addEventListener('unhandledrejection',function(e){
  try{toast('⚠ Something broke','['+window.UL_BUILD+'] '+String(e.reason&&e.reason.message||e.reason).slice(0,140),'bad')}catch(x){}
 });
 (function(){var el=document.querySelector('.brand-sub')||document.querySelector('.who');
- if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v4.7</span>')})();
+ if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v4.8</span>')})();
 </script>
 <script>
 /* ═════════ THEMES — 6 palettes, one tap, remembered per device ═════════ */
