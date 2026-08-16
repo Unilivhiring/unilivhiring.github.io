@@ -1715,7 +1715,7 @@ api=function(fn,args,ok,fail){
 </script>
 
 <script>
-window.UL_BUILD='v7.1.1';
+window.UL_BUILD='v7.2';
 console.log('UniLiv Hiring build',window.UL_BUILD);
 window.addEventListener('error',function(e){
  try{toast('⚠ Something broke','['+window.UL_BUILD+'] '+String(e.message).slice(0,140),'bad')}catch(x){}
@@ -1724,7 +1724,7 @@ window.addEventListener('unhandledrejection',function(e){
  try{toast('⚠ Something broke','['+window.UL_BUILD+'] '+String(e.reason&&e.reason.message||e.reason).slice(0,140),'bad')}catch(x){}
 });
 (function(){var el=document.querySelector('.brand-sub')||document.querySelector('.who');
- if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v7.1.1</span>')})();
+ if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v7.2</span>')})();
 </script>
 <script>
 /* ═════════ THEMES — 6 palettes, one tap, remembered per device ═════════ */
@@ -2069,7 +2069,21 @@ function bcvList(){var fs=[].slice.call($('bcv-f').files).slice(0,20);window._bc
   '<input id="bn'+i+'" placeholder="Name" value="'+esc(guess)+'" style="flex:1">'+
   '<input id="bp'+i+'" placeholder="Phone" type="tel" style="max-width:130px">'+
   '<input id="be'+i+'" placeholder="Email (optional)" type="email" style="max-width:180px"></div>'}).join('');
- $('bcv-go').disabled=!fs.length}
+ $('bcv-go').disabled=!fs.length;
+ window._bcvB64={};
+ fs.forEach(function(f,i){
+  if(f.size>4*1024*1024)return;
+  var rd=new FileReader();
+  rd.onload=function(){window._bcvB64[i]=rd.result;
+   var st=document.createElement('span');st.id='bs'+i;st.style.cssText='font-size:10px;color:var(--lamp)';st.textContent='✦ reading…';
+   var row=$('bn'+i);if(row)row.parentNode.appendChild(st);
+   api('api_cvExtract',[TK,rd.result,f.type||'application/pdf'],function(r){
+    var s=$('bs'+i);if(s)s.textContent='✦ read ✓';
+    if(r.name&&$('bn'+i)&&(!$('bn'+i).value||/^[\d\s()+\-]+$/.test($('bn'+i).value)))$('bn'+i).value=r.name;
+    if(r.phone&&$('bp'+i)&&!$('bp'+i).value)$('bp'+i).value=r.phone;
+    if(r.email&&$('be'+i)&&!$('be'+i).value)$('be'+i).value=r.email},
+   function(){var s=$('bs'+i);if(s)s.textContent='✎ fill manually'})};
+  rd.readAsDataURL(f)})}
 function bcvRun(rid){var fs=window._bcv||[];var i=0,ok=0,errs=[];
  $('bcv-go').disabled=true;
  function next(){if(i>=fs.length){
