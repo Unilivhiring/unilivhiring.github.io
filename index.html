@@ -892,7 +892,7 @@ function renderPipe(){if(!B.isHR||!X)return;
       '<div class="reqmeta" style="text-align:right">'+(c.daysInStage>7?'<span class="sla bad">':(c.daysInStage>3?'<span class="sla warn">':'<span class="sla ok">'))+c.daysInStage+'d</span>'+
       (c.screen&&c.screen.rating?'<br>★ '+c.screen.rating+'/5':'')+'</div></div></div>'}).join('')+'</div>'}).join('')}
 function applyLink(){var rid=$('pl-req').value;if(!rid){toast('Pick a requisition','The link is per-role.','bad');return}
-  var r=findReq(rid);var link=X.appUrl+'?p=apply&c='+encodeURIComponent(r.code);
+  var r=findReq(rid);var link=(X.pubUrl||X.appUrl)+'?p=apply&c='+encodeURIComponent(r.code);
   dlg('<h3>Public apply link — '+esc(r.code)+'</h3><p style="word-break:break-all;font-family:\'JetBrains Mono\';font-size:11px">'+esc(link)+'</p><p>Share on WhatsApp, posters, job boards. Applicants land in NEW automatically, with duplicate detection.</p>',
   '<button class="ghost" onclick="dclose()">Close</button><button class="btn" onclick="navigator.clipboard.writeText(\''+link+'\');toast(\'Copied\',\'Link on your clipboard.\',\'good\')">Copy link</button>')}
 function addCandDlg(){var rid=$('pl-req').value;if(!rid){toast('Pick a requisition','Choose which role first.','bad');return}
@@ -1550,7 +1550,27 @@ function docsLink(obId){api('api_obDocsLink',[TK,obId],function(r){
 /* offers: show letter/signed links + wa on send */
 var _renderOffers=renderOffers;
 renderOffers=function(){_renderOffers()};
-function offSend(id){api('api_offerSend',[TK,id,Math.random().toString(36).slice(2)],function(r){
+function offSend(id){
+ dlg('<h3>Send the offer</h3><p class="reqmeta">Pick where the letter comes from — your own document, an upload, or the template.</p>'+
+ '<div class="chips" id="ls"><span class="chip2 on" data-v="AUTO" onclick="setPick(\'ls\',\'AUTO\');this.classList.add(\'on\');lsUi()">Auto-generate (template)</span>'+
+ '<span class="chip2" data-v="LINK" onclick="setPick(\'ls\',\'LINK\');this.classList.add(\'on\');lsUi()">Paste Drive/Docs link</span>'+
+ '<span class="chip2" data-v="FILE" onclick="setPick(\'ls\',\'FILE\');this.classList.add(\'on\');lsUi()">Upload PDF</span></div>'+
+ '<div class="f" id="ls-link" style="display:none;margin-top:10px"><label>Letter link</label><input id="ls-url" placeholder="https://docs.google.com/… or Drive file link">'+
+ '<div class="hint">Set the file\'s sharing to “Anyone with the link – Viewer”, or the candidate hits a wall.</div></div>'+
+ '<div class="f" id="ls-file" style="display:none;margin-top:10px"><label>PDF (≤5 MB)</label><input type="file" id="ls-f" accept=".pdf"></div>',
+ '<button class="ghost" onclick="dclose()">Cancel</button><button class="btn" onclick="offSend2(\''+id+'\')">Send offer</button>')}
+function lsUi(){var v=getPick('ls');$('ls-link').style.display=v==='LINK'?'block':'none';$('ls-file').style.display=v==='FILE'?'block':'none'}
+function offSend2(id){var v=getPick('ls')||'AUTO';var op=Math.random().toString(36).slice(2);
+ if(v==='LINK'){var u=$('ls-url').value.trim();
+  if(u.indexOf('https://')!==0){toast('Check the link','It must start with https://','bad');return}
+  return offGo(id,op,{url:u})}
+ if(v==='FILE'){var f=$('ls-f').files[0];
+  if(!f){toast('Pick the PDF','Choose the letter file first.','bad');return}
+  if(f.size>5*1024*1024){toast('Too big','Keep the letter under 5 MB.','bad');return}
+  var rd=new FileReader();rd.onload=function(){offGo(id,op,{b64:rd.result,type:f.type,name:f.name})};rd.readAsDataURL(f);return}
+ offGo(id,op,null)}
+function offGo(id,op,lo){dclose();toast('Sending…','');
+ api('api_offerSend',[TK,id,op,lo],function(r){
  dlg('<h3>Offer sent 🎉</h3><p>'+(r.emailed?'Letter PDF emailed.':'No email on file — share the links yourself:')+'</p>'+
  '<p style="word-break:break-all;font-family:JetBrains Mono,monospace;font-size:11px">Accept: '+esc(r.link)+'<br>Letter: '+esc(r.letter)+'</p>',
  '<button class="ghost" onclick="dclose();refresh()">Done</button>'+
@@ -1684,7 +1704,7 @@ api=function(fn,args,ok,fail){
 </script>
 
 <script>
-window.UL_BUILD='v5.0';
+window.UL_BUILD='v6.0';
 console.log('UniLiv Hiring build',window.UL_BUILD);
 window.addEventListener('error',function(e){
  try{toast('⚠ Something broke','['+window.UL_BUILD+'] '+String(e.message).slice(0,140),'bad')}catch(x){}
@@ -1693,7 +1713,7 @@ window.addEventListener('unhandledrejection',function(e){
  try{toast('⚠ Something broke','['+window.UL_BUILD+'] '+String(e.reason&&e.reason.message||e.reason).slice(0,140),'bad')}catch(x){}
 });
 (function(){var el=document.querySelector('.brand-sub')||document.querySelector('.who');
- if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v5.0</span>')})();
+ if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v6.0</span>')})();
 </script>
 <script>
 /* ═════════ THEMES — 6 palettes, one tap, remembered per device ═════════ */
@@ -2171,6 +2191,33 @@ ownPaint=function(){_ownPaintBp();
   api('api_setSetting',[TK,'BYPASS_BY',v],function(){window._meta.bypassBy=v;
    toast('Bypass policy saved',v==='HR'?'Recruiters can now bypass — badge and reason still apply.':'Strict mode: HR Head only.','good')},
   function(m){toast('Not saved',m,'bad')})})};
+}
+</script>
+<script>
+if(!window.__V51){window.__V51=1;
+(function(){var pg=$('p-admin');if(!pg)return;
+ pg.insertAdjacentHTML('beforeend',
+ '<div class="grid2">'+
+ '<div class="card"><div class="card-t">🩺 System health</div>'+
+ '<div class="card-s">The audit, on tap — zombie records, blank accounts, missing settings. Green means clean.</div>'+
+ '<button class="ghost" onclick="healthRun()">Run health check</button>'+
+ '<div id="hl-out" style="margin-top:12px;font-size:12.5px"></div></div>'+
+ '<div class="card"><div class="card-t">💾 Backups</div>'+
+ '<div class="card-s">A full copy of the database lands in Drive — one tap now, and automatically every Monday with the weekly report. The last 8 are kept.</div>'+
+ '<button class="ghost" onclick="bkRun(this)">Back up now</button>'+
+ '<div id="bk-out" class="reqmeta" style="margin-top:10px"></div></div>'+
+ '</div>')})();
+function healthRun(){$('hl-out').innerHTML='<span class="reqmeta">Checking…</span>';
+ api('api_health',[TK],function(r){
+  if(r.ok){$('hl-out').innerHTML='<span style="color:var(--sage);font-weight:700">✓ All clear</span> <span class="reqmeta">— nothing broken, nothing stale, nothing missing.</span>';return}
+  $('hl-out').innerHTML=r.issues.map(function(i){
+   var col=i.sev==='high'?'var(--ember)':(i.sev==='med'?'var(--lamp)':'var(--txt3)');
+   return '<div style="padding:6px 0;border-bottom:1px solid var(--edge)"><b style="color:'+col+'">'+i.n+'</b> · '+esc(i.msg)+'</div>'}).join('')},
+ function(m){$('hl-out').innerHTML='<span style="color:var(--ember)">'+esc(m)+'</span>'})}
+function bkRun(b){b.disabled=true;b.textContent='Backing up…';
+ api('api_backup',[TK],function(r){b.disabled=false;b.textContent='Back up now';
+  $('bk-out').textContent='✓ '+r.name+' — in your Drive.';toast('Backed up',r.name,'good')},
+ function(m){b.disabled=false;b.textContent='Back up now';toast('Backup failed',m,'bad')})}
 }
 </script>
 </body>
