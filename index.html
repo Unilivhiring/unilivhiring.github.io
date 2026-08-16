@@ -1314,8 +1314,9 @@ function aiBrief(id){toast('✦ Preparing brief','A few seconds…');
    '<div class="aifoot">AI summary of screening + scorecards on record. It phrases; the record decides.</div>',
    '<button class="btn" onclick="dclose()">Done</button>')},
   function(m){toast('AI unavailable',m,'bad')})}
+function waFirst(n){n=String(n||'').trim();return(!n||/^[\d\s()+\-]{6,}$/.test(n))?'there':n.split(' ')[0]}
 function wa(phone,name){var p=String(phone).replace(/\D/g,'');if(p.length===10)p='91'+p;
- var msg=encodeURIComponent('Hi '+name+', this is the UniLiv hiring team — about your application. Is this a good time to talk?');
+ var msg=encodeURIComponent('Hi '+waFirst(name)+'! 👋 This is the UniLiv hiring team, about your application — is now a good time for a quick chat?\n— Team UniLiv');
  window.open('https://wa.me/'+p+'?text='+msg,'_blank')}
 /* ── AI key card on Admin ── */
 (function(){var pg=$('p-admin');if(!pg)return;
@@ -1500,7 +1501,7 @@ function drwRejectDrag2(id){var v=getPick('rr');if(!v){toast('One thing','Pick a
  var c=candOf(id);dclose();
  api('api_candStage',[TK,id,'REJECTED',v],function(){toast('Rejected',v,'good');
   if($('rr-wa')&&$('rr-wa').checked&&c&&c.phone&&window._meta){
-   var rq=findReq(c.reqId)||{};var msg=window._meta.templates.regret.replace('{name}',c.name).replace('{role}',rq.title||'the role');
+   var rq=findReq(c.reqId)||{};var msg=window._meta.templates.regret.replace('{name}',waFirst(c.name)).replace('{role}',rq.title||'the role');
    window.open('https://wa.me/91'+String(c.phone).replace(/\D/g,'').slice(-10)+'?text='+encodeURIComponent(msg),'_blank')}
   refresh()})}
 
@@ -1580,9 +1581,10 @@ candDrawer=function(id){_candDrawer3(id);var c=candOf(id);if(!c||!c.phone)return
  acts.insertAdjacentHTML('beforeend',' <button class="ghost" onclick="aiReach(\''+id+'\')">✦ Draft outreach</button>')};
 function aiReach(id){toast('✦ Drafting…','');
  api('api_ai',[TK,'outreach',id,''],function(r){var c=candOf(id);
+  window._aiTxt=r.text;
   dlg('<h3>✦ Outreach draft</h3><p style="white-space:pre-wrap">'+esc(r.text)+'</p><div class="aifoot">AI phrased it; you send it.</div>',
   '<button class="ghost" onclick="dclose()">Discard</button>'+
-  '<button class="btn" onclick="window.open(\'https://wa.me/91'+String(c.phone).replace(/\D/g,'').slice(-10)+'?text=\'+encodeURIComponent('+JSON.stringify('')+'+document.querySelector(\'#dlg p\').textContent),\'_blank\')">💬 Open in WhatsApp</button>')},
+  '<button class="btn" onclick="window.open(\'https://wa.me/91'+String(c.phone).replace(/\D/g,'').slice(-10)+'?text=\'+encodeURIComponent(window._aiTxt||\'\'),\'_blank\')">💬 Open in WhatsApp</button>')},
  function(m){toast('AI unavailable',m,'bad')})}
 
 /* admin: delegation, bands, masters, templates, dupes, archive */
@@ -1682,7 +1684,7 @@ api=function(fn,args,ok,fail){
 </script>
 
 <script>
-window.UL_BUILD='v4.9.3';
+window.UL_BUILD='v5.0';
 console.log('UniLiv Hiring build',window.UL_BUILD);
 window.addEventListener('error',function(e){
  try{toast('⚠ Something broke','['+window.UL_BUILD+'] '+String(e.message).slice(0,140),'bad')}catch(x){}
@@ -1691,7 +1693,7 @@ window.addEventListener('unhandledrejection',function(e){
  try{toast('⚠ Something broke','['+window.UL_BUILD+'] '+String(e.reason&&e.reason.message||e.reason).slice(0,140),'bad')}catch(x){}
 });
 (function(){var el=document.querySelector('.brand-sub')||document.querySelector('.who');
- if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v4.9.3</span>')})();
+ if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v5.0</span>')})();
 </script>
 <script>
 /* ═════════ THEMES — 6 palettes, one tap, remembered per device ═════════ */
@@ -2029,9 +2031,10 @@ function bcvDlg(){var rid=$('pl-req')?$('pl-req').value:'';
 function bcvList(){var fs=[].slice.call($('bcv-f').files).slice(0,20);window._bcv=fs;
  $('bcv-rows').innerHTML=fs.map(function(f,i){
   var guess=f.name.replace(/\.(pdf|jpe?g|png)$/i,'').replace(/[_\-.]+/g,' ').replace(/\b(cv|resume|biodata)\b/ig,'').trim();
-  return '<div class="row" style="margin-bottom:8px"><span class="reqcode" style="width:120px;overflow:hidden;text-overflow:ellipsis">'+esc(f.name)+'</span>'+
+  return '<div class="row" style="margin-bottom:8px"><span class="reqcode" style="width:110px;overflow:hidden;text-overflow:ellipsis">'+esc(f.name)+'</span>'+
   '<input id="bn'+i+'" placeholder="Name" value="'+esc(guess)+'" style="flex:1">'+
-  '<input id="bp'+i+'" placeholder="Phone" type="tel" style="max-width:140px"></div>'}).join('');
+  '<input id="bp'+i+'" placeholder="Phone" type="tel" style="max-width:130px">'+
+  '<input id="be'+i+'" placeholder="Email (optional)" type="email" style="max-width:180px"></div>'}).join('');
  $('bcv-go').disabled=!fs.length}
 function bcvRun(rid){var fs=window._bcv||[];var i=0,ok=0,errs=[];
  $('bcv-go').disabled=true;
@@ -2044,8 +2047,9 @@ function bcvRun(rid){var fs=window._bcv||[];var i=0,ok=0,errs=[];
   if(!name||!phone){errs.push(f.name+': name & phone needed');next();return}
   if(f.size>5*1024*1024){errs.push(f.name+': over 5 MB');next();return}
   $('bcv-out').classList.add('on');$('bcv-out').textContent='Uploading '+i+' / '+fs.length+' — '+name+'…';
+  var em=($('be'+(i-1))?$('be'+(i-1)).value.trim():'');
   var r=new FileReader();
-  r.onload=function(){api('api_addCandidate',[TK,rid,{name:name,phone:phone,source:'CONSULTANCY',
+  r.onload=function(){api('api_addCandidate',[TK,rid,{name:name,phone:phone,email:em,source:'CONSULTANCY',
     resumeB64:r.result,resumeName:f.name,resumeType:f.type}],
    function(){ok++;next()},function(m){errs.push(name+': '+m);next()})};
   r.onerror=function(){errs.push(f.name+': read failed');next()};
