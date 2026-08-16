@@ -208,7 +208,6 @@ h1{font-family:'Fraunces',serif;font-weight:600;font-size:23px;letter-spacing:.0
  .dlg-acts{position:sticky;bottom:0;background:inherit;padding-top:10px}
  .toast-wrap,.tst{bottom:calc(96px + env(safe-area-inset-bottom))!important}
  /* bottom navigation */
- #bnav{display:flex!important}
 }
 #bnav{display:none;position:fixed;left:0;right:0;bottom:0;z-index:70;
  background:rgba(18,14,26,.92);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
@@ -230,7 +229,7 @@ body::before{content:'';position:fixed;inset:-20%;z-index:0;pointer-events:none;
 @keyframes aur{to{transform:translate3d(2.5%,1.5%,0) scale(1.05)}}
 body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.05;
  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E")}
-#app,#gate,#bnav,#dlgo,.toast-wrap{position:relative;z-index:1}
+#app,#gate,#dlgo,.toast-wrap{position:relative;z-index:1}
 .top{z-index:58}.rail{z-index:56}
 /* liquid glass surfaces w/ gradient borders */
 .card,.gcard .gbox,#dlg,.jcard{
@@ -349,7 +348,13 @@ table{max-width:100%!important}
  table{mask-image:linear-gradient(90deg,#000 92%,transparent);-webkit-mask-image:linear-gradient(90deg,#000 92%,transparent)}
  table::-webkit-scrollbar{height:4px}
 }
-</style></head>
+</style><style id="v95">
+html{height:100%;background:#0D0B14}
+body{min-height:100dvh;background:#0D0B14}
+#app{min-height:100dvh}
+@supports(height:100dvh){@media(max-width:760px){body{padding-bottom:calc(84px + env(safe-area-inset-bottom))}}}
+#bnav{bottom:0!important}
+</style><style>@media(min-width:761px){#bnav{display:none!important}}</style></head>
 <body>
 <div id="gate">
   <div class="gcard">
@@ -645,7 +650,7 @@ function apiSave(){var v=$('su-url').value.trim();
   if(v.indexOf('https://script.google.com/')!==0||v.indexOf('/exec')<0){
     $('su-err').textContent='That must be the /exec link from Manage deployments.';$('su-err').classList.add('on');return}
   localStorage.setItem('ul_api',v);location.reload()}
-function sessionGone(){TK=null;$('app').style.display='none';$('gate').classList.remove('gone');show('g-choose');
+function sessionGone(){try{var _n=document.getElementById('bnav');if(_n)_n.style.display='none'}catch(e){}TK=null;$('app').style.display='none';$('gate').classList.remove('gone');show('g-choose');
   toast('Session expired','Please sign in again.','bad')}
 
 /* ═════════ gate ═════════ */
@@ -1890,7 +1895,7 @@ api=function(fn,args,ok,fail){
 </script>
 
 <script>
-window.UL_BUILD='v9.4';
+window.UL_BUILD='v9.5.1';
 console.log('UniLiv Hiring build',window.UL_BUILD);
 window.addEventListener('error',function(e){
  try{toast('⚠ Something broke','['+window.UL_BUILD+'] '+String(e.message).slice(0,140),'bad')}catch(x){}
@@ -1899,7 +1904,7 @@ window.addEventListener('unhandledrejection',function(e){
  try{toast('⚠ Something broke','['+window.UL_BUILD+'] '+String(e.reason&&e.reason.message||e.reason).slice(0,140),'bad')}catch(x){}
 });
 (function(){var el=document.querySelector('.brand-sub')||document.querySelector('.who');
- if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v9.4</span>')})();
+ if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v9.5.1</span>')})();
 </script>
 <script>
 /* ═════════ THEMES — 6 palettes, one tap, remembered per device ═════════ */
@@ -2096,7 +2101,7 @@ go=function(p){_goSp(p);
  if(SPACE_MY.indexOf(p)>-1&&SPACE_WORK.indexOf(p)<0&&mode!=='my'){localStorage.setItem('ul_space','my')}
  else if(SPACE_WORK.indexOf(p)>-1&&SPACE_MY.indexOf(p)<0&&mode!=='work'){localStorage.setItem('ul_space','work')}
  spaceApply();
- try{var T={myreqs:'My Requests',approvals:'Approvals',hires:'My Team',hr:'Requisitions',users:'Users',pipeline:'Pipeline',loop:'Loop',interviews:'Interviews',offers:'Offers',onboarding:'Onboarding',ask:'Ask',reports:'Reports',audit:'Audit',admin:'Users & Org'};
+ try{var T={myreqs:'My Requests',approvals:'Approvals',hires:'My Team',hr:'Requisitions',users:'Users',pipeline:'Pipeline',loop:'Loop',interviews:'Interviews',offers:'Offers',onboard:'Onboarding',ask:'Ask',reports:'Reports',audit:'Audit',admin:'Users & Org'};
   document.title=(T[p]?T[p]+' · ':'')+'UniLiv Hiring'}catch(e){}};
 }
 </script>
@@ -2469,9 +2474,13 @@ document.addEventListener('keydown',function(e){
 if(!window.__MOB8){window.__MOB8=1;
 var BN_MY=[['myreqs','📋','Requests'],['approvals','✅','Approvals'],['hires','👥','My Team'],['ask','✦','Ask']];
 var BN_WORK=[['pipeline','🎯','Pipeline'],['loop','⚡','Loop'],['interviews','🗓','Interviews'],['offers','💼','Offers'],['more','⋯','More']];
-var BN_MORE=[['hr','📑','Requisitions'],['admin','👤','Users & Org'],['onboarding','🚀','Onboarding'],['reports','📊','Reports'],['audit','🧾','Audit'],['ask','✦','Ask']];
+var BN_MORE=[['hr','📑','Requisitions'],['admin','👤','Users & Org'],['onboard','🚀','Onboarding'],['reports','📊','Reports'],['audit','🧾','Audit'],['ask','✦','Ask']];
 function bnavBuild(){
  if(!document.getElementById('bnav'))document.body.insertAdjacentHTML('beforeend','<nav id="bnav"></nav>');
+ var n=document.getElementById('bnav');
+ var gated=!TK||!B||($('gate')&&!$('gate').classList.contains('gone'));
+ n.style.display=gated?'none':'flex';
+ if(gated)return;
  var mode=(typeof spaceMode==='function')?spaceMode():'my';
  var set=(mode==='work'&&B&&B.isHR)?BN_WORK:BN_MY;
  var cur=window.__curP||'';
