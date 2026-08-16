@@ -229,7 +229,7 @@ body::before{content:'';position:fixed;inset:-20%;z-index:0;pointer-events:none;
 @keyframes aur{to{transform:translate3d(2.5%,1.5%,0) scale(1.05)}}
 body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.05;
  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E")}
-#app,#gate,.toast-wrap{position:relative;z-index:1}
+#app,#gate{position:relative;z-index:1}
 #dlgo{z-index:400!important}
 .bar{z-index:58}.rail{z-index:56}
 /* liquid glass surfaces w/ gradient borders */
@@ -739,7 +739,7 @@ function bellToggle(){var p=$('bellp');p.classList.toggle('on');
 function bellFill(n){if(!n)return;
   $('bell-n').style.display=n.unread?'block':'none';$('bell-n').textContent=n.unread;
   $('bell-list').innerHTML=n.items.length? n.items.map(function(x){
-    return '<div class="ntf'+(x.read?'':' unread')+'" onclick="bellGo(\''+esc(x.link)+'\')"><b>'+esc(x.title)+'</b><br>'+
+    return '<div class="ntf'+(x.read?'':' unread')+'" onclick="bellGo(\''+escJs(x.link)+'\')"><b>'+esc(x.title)+'</b><br>'+
     esc(x.body)+'<small>'+new Date(x.at).toLocaleString()+'</small></div>'}).join('')
   :'<div class="empty" style="border:none">Quiet for now — nothing needs you.</div>'}
 function bellGo(l){$('bellp').classList.remove('on');
@@ -809,7 +809,7 @@ function openDetail(id){var r=findReq(id);if(!r)return;
   if(['REJECTED','WITHDRAWN'].indexOf(r.status)>-1)
     acts+='<button class="ghost" onclick="cloneReq(\''+r.id+'\')">Clone & re-raise</button> ';
   if(B.isHead&&r.status==='PENDING_APPROVAL')
-    if(canBypass())acts+='<button class="ghost" style="border-color:var(--violet);color:var(--violet)" onclick="bypass(\''+r.id+'\',\''+esc(r.code)+'\')">⚡ Bypass approval</button> ';
+    if(canBypass())acts+='<button class="ghost" style="border-color:var(--violet);color:var(--violet)" onclick="bypass(\''+r.id+'\',\''+escJs(r.code)+'\')">⚡ Bypass approval</button> ';
   var byp=(r.trail||[]).filter(function(a){return a.decision==='BYPASSED'&&!a.ack&&a.approver===B.me.email});
   if(byp.length)acts+='<button class="ghost" onclick="ackBypass(\''+r.id+'\',false)">Acknowledge bypass</button> <button class="ghost" onclick="ackBypass(\''+r.id+'\',true)">Raise concern</button>';
   $('detail-body').innerHTML=h+(acts?'<div class="row">'+acts+'</div>':'');
@@ -973,7 +973,7 @@ function renderHR(){
     '<td>'+esc(r.urgency)+'</td><td><span class="pill p-'+r.status+'">'+r.status.replace(/_/g,' ')+'</span>'+
     (r.bypassed==='TRUE'?' <span class="byp">⚡</span>':'')+'</td>'+
     '<td>'+(r.status==='PENDING_APPROVAL'?slaChip(r):(r.daysOpen? r.daysOpen+'d':'—'))+'</td>'+
-    '<td>'+(canBypass()&&r.status==='PENDING_APPROVAL'?'<button class="ghost" style="padding:5px 10px;font-size:11px;border-color:var(--violet);color:var(--violet)" onclick="event.stopPropagation();bypass(\''+r.id+'\',\''+esc(r.code)+'\')">⚡ Bypass</button>':'')+'</td></tr>'}).join('')
+    '<td>'+(canBypass()&&r.status==='PENDING_APPROVAL'?'<button class="ghost" style="padding:5px 10px;font-size:11px;border-color:var(--violet);color:var(--violet)" onclick="event.stopPropagation();bypass(\''+r.id+'\',\''+escJs(r.code)+'\')">⚡ Bypass</button>':'')+'</td></tr>'}).join('')
   :'<tr><td colspan="8"><div class="empty" style="border:none">'+(hrFilter?'No requisitions with status '+hrFilter.replace(/_/g,' ')+'. <span style="color:var(--lamp);cursor:pointer" onclick="hrF(\'\')">Show all</span>':'Nothing here yet.')+'</div></td></tr>'}
 function hrF(s){hrFilter=s;renderHR()}
 
@@ -983,12 +983,12 @@ function admList(){api('api_adminList',[TK],function(L){window._adm=L;
     return '<tr><td><b>'+esc(u.name)+'</b><br><span class="reqcode">'+esc(u.email)+'</span>'+(u.active?'':' <span class="pill p-REJECTED">off</span>')+'</td>'+
     '<td style="font-size:11px">'+u.roles.join('<br>')+'</td><td class="reqcode">'+esc(u.reportsTo||'—')+'</td>'+
     '<td style="vertical-align:middle;min-width:190px"><button class="ghost" style="padding:5px 10px;font-size:11px" onclick="admEdit('+i+')">Edit</button> '+
-    '<button class="ghost" style="padding:5px 10px;font-size:11px" onclick="admReset(\''+esc(u.email)+'\')">Reset pw</button>'+
+    '<button class="ghost" style="padding:5px 10px;font-size:11px" onclick="admReset(\''+escJs(u.email)+'\')">Reset pw</button>'+
     ((window._meta&&u.email===(window._meta.owner||''))||(B&&B.me&&u.email===B.me.email)?'':' <button class="ghost" style="padding:5px 10px;font-size:11px;border-color:var(--ember);color:var(--ember)" onclick="admDel(\''+escJs(u.email)+'\',\''+escJs(u.name)+'\')">Remove</button>')+
     '</td></tr>'}).join('')})}
 function admDel(email,name){
  dlg('<h3>Remove '+esc(name)+'?</h3><p>This only works for accounts with <b>no hiring history</b> — test rows, typos, never-used invites. Anyone who has raised or owned requisitions should be <b>deactivated</b> instead (Edit → untick Active) so records stay intact. Removal is permanent.</p>',
-  '<button class="ghost" onclick="dclose()">Keep</button><button class="danger" onclick="admDel2(\''+esc(email)+'\')">Remove permanently</button>')}
+  '<button class="ghost" onclick="dclose()">Keep</button><button class="danger" onclick="admDel2(\''+escJs(email)+'\')">Remove permanently</button>')}
 function admDel2(email){dclose();
  api('api_adminDelete',[TK,email],
   function(){toast('Removed',email+' is gone.','good');go('admin')},
@@ -1010,7 +1010,7 @@ function admSave(){var b=$('au-save');if(b.disabled)return;b.disabled=true;b.tex
       $('au-err').classList.remove('on');admList();refresh()},
     function(m){b.disabled=false;b.textContent='Save';$('au-err').textContent=m;$('au-err').classList.add('on');$('au-ok').classList.remove('on')})}
 function admReset(email){dlg('<h3>Reset password for '+esc(email)+'?</h3><p>They\'ll get a temporary password and must change it at sign-in. Their session is signed out.</p>',
-  '<button class="ghost" onclick="dclose()">Cancel</button><button class="btn" onclick="admReset2(\''+esc(email)+'\')">Reset</button>')}
+  '<button class="ghost" onclick="dclose()">Cancel</button><button class="btn" onclick="admReset2(\''+escJs(email)+'\')">Reset</button>')}
 function admReset2(email){dclose();api('api_adminReset',[TK,email],function(r){
   dlg('<h3>Temporary password</h3><p style="font-family:\'JetBrains Mono\';font-size:16px;color:var(--lamp)">'+esc(r.temp)+'</p>'+
   '<p>Shown once — it\'s stored only as a hash.'+(r.emailed?' Also emailed to them.':' Email failed — share it yourself.')+'</p>',
@@ -1404,7 +1404,7 @@ function todayCard(){var a=window._att;if(!a)return;
   var host=pg.querySelector('h1');if(!host)return;
   var el=document.createElement('div');el.className='card today';
   el.innerHTML='<div class="card-t">✦ What needs you today <span style="color:var(--txt3);font-size:12px;font-weight:400">('+a.total+')</span></div>'+
-   a.items.map(function(x){return '<div class="trow" onclick="todayGo(\''+esc(x.go)+'\')"><span><b>'+esc(x.t)+'</b><br><small>'+esc(x.s)+'</small></span><span>→</span></div>'}).join('');
+   a.items.map(function(x){return '<div class="trow" onclick="todayGo(\''+escJs(x.go)+'\')"><span><b>'+esc(x.t)+'</b><br><small>'+esc(x.s)+'</small></span><span>→</span></div>'}).join('');
   host.parentElement.insertBefore(el, host.parentElement.children[2]||null)})}
 function todayGo(g){if(g.indexOf('detail:')===0){refresh(function(){openDetail(g.slice(7))});return}
  refresh(function(){go(g)})}
@@ -1429,7 +1429,7 @@ function askGo(){var q=$('ask-q').value.trim();if(!q)return;
    '<div class="askcard"><div class="reqmeta" style="margin-bottom:6px">“'+esc(q)+'”</div>'+
    '<div class="askbig">'+esc(a.big)+'</div><div style="font-size:13px;color:var(--txt2)">'+esc(a.text)+'</div>'+
    (a.rows&&a.rows.length?'<div class="askrows">'+a.rows.map(function(r){return '<div><b>'+esc(r[0])+'</b><span>'+esc(r[1])+'</span></div>'}).join('')+'</div>':'')+
-   (a.go?'<div style="margin-top:12px"><button class="ghost" onclick="todayGo(\''+esc(a.go)+'\')">Open it →</button></div>':'')+
+   (a.go?'<div style="margin-top:12px"><button class="ghost" onclick="todayGo(\''+escJs(a.go)+'\')">Open it →</button></div>':'')+
    '<div class="askbasis">'+esc(a.basis||'')+'</div></div>')},
   function(m){var w=$('ask-wait');if(w)w.remove();toast('Ask failed',m,'bad')});
  $('ask-q').value=''}
@@ -2142,7 +2142,7 @@ function loadMySide(){api('api_mySide',[TK],function(d){
    ('💼 Offer '+j.offer.status.toLowerCase().replace('_',' ')+(j.offer.joining?' · joins '+j.offer.joining:'')):'';
   return '<div class="jcard"><div class="jtop"><span class="jname">'+esc(j.name)+
    (j.verdict==='PROCEED'?' <span title="you said proceed">👍</span>':'')+'</span>'+
-   '<span class="p p-'+esc(j.stage)+'" style="font-size:10px">'+esc(j.stage.replace(/_/g,' '))+'</span></div>'+
+   '<span class="pill p-'+esc(j.stage)+'" style="font-size:10px">'+esc(j.stage.replace(/_/g,' '))+'</span></div>'+
    '<div class="jmeta">'+esc(j.reqCode)+' · '+esc(j.reqTitle)+' · '+esc(j.prop)+(j.city?' · '+esc(j.city):'')+' · '+j.daysInStage+'d in stage</div>'+
    '<div class="jrow">'+
    (j.resume?'<a class="ghost" style="padding:6px 12px;font-size:11.5px;text-decoration:none" href="'+esc(j.resume)+'" target="_blank">📄 View CV</a>':'<span class="jmeta">no CV on file</span>')+
