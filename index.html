@@ -161,7 +161,7 @@ h1{font-family:'Fraunces',serif;font-weight:600;font-size:23px;letter-spacing:.0
 .peye{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--txt3);font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:6px 8px;border-radius:6px}
 .peye:hover{color:var(--lamp);background:var(--lamp-dim)}
 #boot{position:fixed;inset:0;z-index:300;background:var(--ink);display:none;place-items:center;font-family:'JetBrains Mono';font-size:11.5px;color:var(--txt3);letter-spacing:.14em;text-transform:uppercase}
-@media(max-width:760px){
+@media(max-width:760px){.iconb{width:40px;height:40px}.tag b{padding:4px 8px}
   *{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
   .bar{padding:8px 14px;padding-top:calc(8px + env(safe-area-inset-top));height:auto}
   .mark i,.who-n,.who-r{display:none}
@@ -195,7 +195,7 @@ h1{font-family:'Fraunces',serif;font-weight:600;font-size:23px;letter-spacing:.0
  input,select,textarea{min-height:46px;font-size:16px!important}
  .rail{display:none!important}
  .who{padding-left:6px}.who-r,#w-r{display:none}
- .top .search,#topsearch{max-width:150px}
+ .bar .search,#topsearch{max-width:150px}
  table{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-radius:12px}
  .card{padding:16px 14px;border-radius:14px}
  .row{gap:8px}
@@ -206,7 +206,7 @@ h1{font-family:'Fraunces',serif;font-weight:600;font-size:23px;letter-spacing:.0
   max-height:92vh;overflow-y:auto;padding:20px 18px calc(20px + env(safe-area-inset-bottom))!important}
  #dlg::before{content:'';display:block;width:42px;height:4px;border-radius:2px;background:var(--edge);margin:0 auto 14px}
  .dlg-acts{position:static;padding-top:14px}
- .toast-wrap,.tst{bottom:calc(96px + env(safe-area-inset-bottom))!important}
+ #toasts{bottom:calc(96px + env(safe-area-inset-bottom))!important}
  /* bottom navigation */
 }
 #bnav{display:none;position:fixed;left:0;right:0;bottom:0;z-index:70;
@@ -230,8 +230,8 @@ body::before{content:'';position:fixed;inset:-20%;z-index:0;pointer-events:none;
 body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.05;
  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E")}
 #app,#gate,.toast-wrap{position:relative;z-index:1}
-#dlgo{z-index:85!important}
-.top{z-index:58}.rail{z-index:56}
+#dlgo{z-index:400!important}
+.bar{z-index:58}.rail{z-index:56}
 /* liquid glass surfaces w/ gradient borders */
 .card,.gcard .gbox,#dlg,.jcard{
  background:linear-gradient(rgba(255,255,255,.028),rgba(255,255,255,.014)) padding-box,
@@ -240,7 +240,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opac
  box-shadow:0 18px 44px -18px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.05)}
 .card{transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s}
 .card:hover{transform:translateY(-2px);box-shadow:0 26px 60px -20px rgba(139,104,255,.28),inset 0 1px 0 rgba(255,255,255,.07)}
-.top{background:rgba(16,12,24,.62)!important;backdrop-filter:blur(24px) saturate(1.4);-webkit-backdrop-filter:blur(24px) saturate(1.4);
+.bar{background:rgba(16,12,24,.62)!important;backdrop-filter:blur(24px) saturate(1.4);-webkit-backdrop-filter:blur(24px) saturate(1.4);
  border-bottom:1px solid transparent;
  background-image:linear-gradient(rgba(16,12,24,.62),rgba(16,12,24,.62)),linear-gradient(90deg,transparent,rgba(183,156,255,.35),transparent);
  background-origin:border-box;background-clip:padding-box,border-box}
@@ -301,7 +301,7 @@ input,select,textarea{border-radius:12px!important;border:1px solid rgba(255,255
 input:focus,textarea:focus,select:focus{border-color:rgba(183,156,255,.7)!important;box-shadow:0 0 0 3.5px rgba(183,156,255,.22)!important}
 .rail button{font-weight:600;letter-spacing:-.01em}
 .rail button.on::after{height:2px!important;box-shadow:none!important;border-radius:2px}
-.top{background:rgba(13,11,20,.72)!important}
+.bar{background:rgba(13,11,20,.72)!important}
 .spaceseg{border-radius:980px!important}.spaceseg button{border-radius:980px!important}
 .page.on{animation-duration:.34s!important}
 @keyframes appear{from{opacity:0;transform:translateY(8px);filter:none}to{opacity:1;transform:none}}
@@ -333,7 +333,7 @@ h1{background:linear-gradient(100deg,#F5F5F7 30%,#C4A9FF 50%,#F5F5F7 70%);backgr
  html,body{overflow-x:hidden!important;max-width:100vw}
  #app,.page{max-width:100vw;overflow-x:clip}
  body::before,body::after{display:none!important}
- .card,#dlg,.top,.gcard .gbox,.jcard{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(255,255,255,.045)!important}
+ .card,#dlg,.bar,.gcard .gbox,.jcard{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(255,255,255,.045)!important}
  h1{animation:none!important;background:none!important;-webkit-text-fill-color:#F5F5F7!important;color:#F5F5F7}
  .page.on,.page.on .card{animation:none!important}
  .card:hover{transform:none!important}.card::before{display:none!important}
@@ -355,11 +355,11 @@ body{min-height:100dvh;background:#0D0B14}
 #app{min-height:100dvh}
 @supports(height:100dvh){@media(max-width:760px){body{padding-bottom:calc(84px + env(safe-area-inset-bottom))}}}
 #bnav{bottom:0!important}
-</style><style>@media(min-width:761px){#bnav{display:none!important}}</style><style>@media(max-width:430px){.iconb[title*="heme"],#w-stamp,[class*=stamp]{display:none!important}.top{padding-left:10px;padding-right:8px}.top .iconb{width:38px;height:38px}}</style><style id="v962">
+</style><style>@media(min-width:761px){#bnav{display:none!important}}</style><style>@media(max-width:430px){.iconb[title*="heme"],#w-stamp,[class*=stamp]{display:none!important}.bar{padding-left:10px;padding-right:8px}.bar .iconb{width:38px;height:38px}}</style><style id="v962">
 .card:has(table){transform:none!important}
 .card:has(table):hover{transform:translateY(-1px)!important}
 .card:has(table)::before{display:none}
-.top{background:rgba(13,11,20,.9)!important}
+.bar{background:rgba(13,11,20,.9)!important}
 #p-audit .card,#p-reports .card{transform:none!important}
 </style><style>#p-admin td button,#p-admin td a.ghost{margin:2px 6px 2px 0}</style></head>
 <body>
@@ -453,8 +453,7 @@ body{min-height:100dvh;background:#0D0B14}
       <div class="f"><label>Position title</label><input id="f-title" placeholder="e.g. Chef" oninput="wsave()"></div>
       <div class="f"><label>Department</label>
         <select id="f-dept" onchange="wsave()"><option value="">— pick —</option>
-        <option>F&B</option><option>Operations</option><option>Housekeeping</option><option>Security</option>
-        <option>Sales</option><option>Community</option><option>Maintenance</option><option>Corporate</option></select></div>
+</select></div>
       <div class="f"><label>Property / location</label><input id="f-props" placeholder="e.g. UniLiv Aster" oninput="wsave()"></div>
       <div class="f"><label>Openings</label><input id="f-open" type="number" min="1" max="20" value="1" oninput="wsave()">
         <div class="hint" id="h-open"></div></div>
@@ -601,6 +600,7 @@ body{min-height:100dvh;background:#0D0B14}
 var TK=null, B=null, wiz={id:null,step:1,must:[],good:[],resp:[]}, wsaveT=null, lastList='myreqs', dirty=false;
 function $(id){return document.getElementById(id)}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function escJs(s){return String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'\\"').replace(/</g,'\\x3c').replace(/[\r\n]/g,' ')}
 function show(id){['g-choose','g-login','g-change'].forEach(function(x){$(x).style.display=x===id?'block':'none'})}
 function eye(id,btn){var i=$(id);i.type=i.type==='password'?'text':'password';btn.textContent=i.type==='password'?'Show':'Hide'}
 function toast(t,s,k){var d=document.createElement('div');d.className='toast '+(k||'');
@@ -661,7 +661,7 @@ function sessionGone(){try{var _n=document.getElementById('bnav');if(_n)_n.style
   toast('Session expired','Please sign in again.','bad')}
 
 /* ═════════ gate ═════════ */
-api('api_probe',[],function(p){
+if(apiMode()!=='ext')api('api_probe',[],function(p){
   var gb=$('gbtn');if(gb)gb.remove();
   else if(p.detected_email){$('gbtn-t').innerHTML='Sign in as '+esc(p.detected_email)+
     (p.provisioned?'':'<small>This account isn\'t provisioned — an admin must add it, or use email & password</small>')}
@@ -681,7 +681,7 @@ function pwm(){var a=$('c-n1').value,b=$('c-n2').value,m=$('c-meter');
   else{m.textContent='They don\'t match yet.';m.className='hint warn'}}
 function doChange(){if($('c-n1').value!==$('c-n2').value){$('c-err').textContent='Passwords don\'t match.';$('c-err').classList.add('on');return}
   api('api_changePassword',[TK,$('c-cur').value,$('c-n1').value],function(){
-    dlg('<h3>Password saved</h3><p>It is stored only as a salted hash — an admin can reset it, but never recover it.</p>',
+    dlg('<h3>Password saved</h3><p>It is stored only as a one-way hash (salted for new passwords) — an admin can reset it, but never recover it.</p>',
       '<button class="btn" onclick="dclose();boot()">Continue</button>')},
     function(m){$('c-err').textContent=m;$('c-err').classList.add('on')})}
 function signOut(){api('api_logout',[TK]);sessionGone();toast('Signed out','See you soon.')}
@@ -702,7 +702,7 @@ function bootLegacy(){
   var wd2=setTimeout(function(){if(!__bootDone)bootStuck('The server did not answer twice in a row.')},12000);
   api('api_bootstrap',[TK],function(b){if(__bootDone)return;__bootDone=true;clearTimeout(wd2);B=b;bootShow()},
   function(m){if(__bootDone)return;__bootDone=true;clearTimeout(wd2);bootStuck(m)})}
-function bootShow(){$('boot').style.display='none';$('app').style.display='block';paint();go(landing());try{todayCard()}catch(e){}}
+function bootShow(){$('boot').style.display='none';$('app').style.display='block';paint();go(landing());window.__booted=1;try{todayCard()}catch(e){}}
 function bootStuck(msg){$('boot').innerHTML='<div style="text-align:center;max-width:420px;margin:0 auto">'+
   '<div style="font-family:Fraunces,serif;font-size:22px;margin-bottom:8px">Taking too long</div>'+
   '<div style="color:var(--txt3);font-size:13px;margin-bottom:6px">'+esc(String(msg||''))+'</div>'+
@@ -746,9 +746,9 @@ function bellFill(n){if(!n)return;
     esc(x.body)+'<small>'+new Date(x.at).toLocaleString()+'</small></div>'}).join('')
   :'<div class="empty" style="border:none">Quiet for now — nothing needs you.</div>'}
 function bellGo(l){$('bellp').classList.remove('on');
-  refresh(function(){go(l==='#approvals'?'approvals':(l==='#hr'?'hr':'myreqs'))})}
+  refresh(function(){(function(){var p=String(l||'').replace('#','');var ok=['myreqs','approvals','hr','pipeline','offers','onboard','interviews','hires','admin','loop','reports','audit'];go(ok.indexOf(p)>-1?p:'myreqs')})()})}
 function bellRead(){api('api_notifsRead',[TK],function(){api('api_notifs',[TK],bellFill)})}
-setInterval(function(){if(TK)api('api_notifs',[TK],bellFill)},60000);
+setInterval(function(){if(TK)api('api_notifs',[TK],bellFill,function(){})},60000);
 
 /* ═════════ my requests ═════════ */
 function slaChip(r){if(!r.slaDueAt)return '';var ms=new Date(r.slaDueAt)-Date.now(),h=ms/36e5;
@@ -987,7 +987,7 @@ function admList(){api('api_adminList',[TK],function(L){window._adm=L;
     '<td style="font-size:11px">'+u.roles.join('<br>')+'</td><td class="reqcode">'+esc(u.reportsTo||'—')+'</td>'+
     '<td style="vertical-align:middle;min-width:190px"><button class="ghost" style="padding:5px 10px;font-size:11px" onclick="admEdit('+i+')">Edit</button> '+
     '<button class="ghost" style="padding:5px 10px;font-size:11px" onclick="admReset(\''+esc(u.email)+'\')">Reset pw</button>'+
-    ((window._meta&&u.email===(window._meta.owner||''))||(B&&B.me&&u.email===B.me.email)?'':' <button class="ghost" style="padding:5px 10px;font-size:11px;border-color:var(--ember);color:var(--ember)" onclick="admDel(\''+esc(u.email)+'\',\''+esc(u.name)+'\')">Remove</button>')+
+    ((window._meta&&u.email===(window._meta.owner||''))||(B&&B.me&&u.email===B.me.email)?'':' <button class="ghost" style="padding:5px 10px;font-size:11px;border-color:var(--ember);color:var(--ember)" onclick="admDel(\''+escJs(u.email)+'\',\''+escJs(u.name)+'\')">Remove</button>')+
     '</td></tr>'}).join('')})}
 function admDel(email,name){
  dlg('<h3>Remove '+esc(name)+'?</h3><p>This only works for accounts with <b>no hiring history</b> — test rows, typos, never-used invites. Anyone who has raised or owned requisitions should be <b>deactivated</b> instead (Edit → untick Active) so records stay intact. Removal is permanent.</p>',
@@ -1050,7 +1050,7 @@ paint=function(){_paint();
   if(!B.isHR&&X&&X.onboardings&&X.onboardings.length&&!$('tab-onboard'))
     t.insertAdjacentHTML('beforeend','<button id="tab-onboard" onclick="go(\'onboard\')">My Hires</button>');
   if(X&&!window.__xdirty){renderPipe();renderInts();renderOffers();renderOB();}
-  else toast('⋯ Syncing','Pulling your latest pipeline…');
+  else if(window.__booted)toast('⋯ Syncing','Pulling your latest pipeline…');
   api('api_bootExtra',[TK],function(x){X=x;window.__xdirty=0;renderPipe();renderInts();renderOffers();renderOB();
     if(B.isHR&&X.funnel)pipeStats()})};
 function candOf(id){if(!X)return null;for(var i=0;i<X.cands.length;i++)if(X.cands[i].id===id)return X.cands[i];return null}
@@ -1270,7 +1270,7 @@ function renderOB(){if(!X)return;var L=X.onboardings||[];
     var items=X.obItems,ck=o.checklist||{};
     var done=items.filter(function(it){return ck[it[0]]&&ck[it[0]].done}).length;
     var mine=o.requester===B.me.email;
-    var h='<div class="card"><div class="row" style="justify-content:space-between"><div>'+
+    var h='<div class="card" data-ob-id="'+esc(o.id)+'"><div class="row" style="justify-content:space-between"><div>'+
     '<b>'+esc(o.name)+'</b> · '+esc(o.code)+(o.empCode?' · '+esc(o.empCode):'')+
     '<div class="reqmeta">'+(o.joinedAt?('Joined '+new Date(o.joinedAt).toDateString()+' · day '+o.dayssince+' · probation '+esc(o.probation)):'Not joined yet')+'</div></div>'+
     '<span class="pill p-'+(o.probation==='CONFIRMED'?'CLOSED_FILLED':o.probation==='EXIT'?'REJECTED':'SOURCING_OPEN')+'">'+esc(o.probation)+'</span></div>';
@@ -1502,7 +1502,7 @@ candDrawer=function(id){_candDrawer(id);var c=candOf(id);if(!c)return;
  var acts=document.querySelector('#dlg .row');if(!acts)return;
  acts.insertAdjacentHTML('beforeend',
   ' <button class="ghost" onclick="aiBrief(\''+id+'\')">✦ Brief me</button>'+
-  (c.phone?' <button class="ghost" onclick="wa(\''+esc(c.phone)+'\',\''+esc(c.name)+'\')">💬 WhatsApp</button>':''))};
+  (c.phone?' <button class="ghost" onclick="wa(\''+escJs(c.phone)+'\',\''+escJs(c.name)+'\')">💬 WhatsApp</button>':''))};
 function aiBrief(id){toast('✦ Preparing brief','A few seconds…');
  api('api_ai',[TK,'brief',id,null],function(r){
   dlg('<h3>✦ Panel brief</h3><p style="white-space:pre-wrap;font-size:13px">'+esc(r.text)+'</p>'+
@@ -1730,8 +1730,8 @@ function loadAudit(){api('api_audit',[TK,{actor:$('au-actor').value,action:$('au
 /* onboarding: docs link + verify uploaded docs + signed offer links */
 var _renderOB=renderOB;
 renderOB=function(){_renderOB();if(!X||!B.isHR)return;
- document.querySelectorAll('#ob-body .card').forEach(function(card,i){
-  var o=(X.onboardings||[])[i];if(!o)return;
+ document.querySelectorAll('#ob-body .card[data-ob-id]').forEach(function(card){
+  var o=(X.onboardings||[]).filter(function(x){return String(x.id)===card.getAttribute('data-ob-id')})[0];if(!o)return;
   var row=card.querySelector('.row:last-child')||card;
   row.insertAdjacentHTML('beforeend',' <button class="ghost" onclick="docsLink(\''+o.id+'\')">📄 Docs upload link</button>');
   var ck=o.checklist||{};Object.keys(ck).forEach(function(k){
@@ -1743,8 +1743,6 @@ function docsLink(obId){api('api_obDocsLink',[TK,obId],function(r){
  '<button class="ghost" onclick="dclose()">Close</button><button class="btn" onclick="navigator.clipboard.writeText(\''+r.link+'\');toast(\'Copied\',\'\',\'good\')">Copy</button>')})}
 
 /* offers: show letter/signed links + wa on send */
-var _renderOffers=renderOffers;
-renderOffers=function(){_renderOffers()};
 function offSend(id){
  dlg('<h3>Send the offer</h3><p class="reqmeta">Pick where the letter comes from — your own document, an upload, or the template.</p>'+
  '<div class="chips" id="ls"><span class="chip2 on" data-v="AUTO" onclick="setPick(\'ls\',\'AUTO\');this.classList.add(\'on\');lsUi()">Auto-generate (template)</span>'+
@@ -1874,7 +1872,7 @@ function applyLang(){var hi=localStorage.getItem('ul_lang')==='hi';
  var map=hi?HI:null;
  document.querySelectorAll('.rail button, h1, .sub, .btn, .ghost, label').forEach(function(el){
   if(el.children.length>0)return;
-  if(!el.dataset.en)el.dataset.en=el.textContent.trim();
+  if(!el.dataset.en)if(/\u2026|ing…|Signing|Saving|Writing/.test(el.textContent))return;el.dataset.en=el.textContent.trim();
   var en=el.dataset.en;
   if(map&&map[en])el.textContent=map[en];
   else if(!map&&el.dataset.en)el.textContent=el.dataset.en})}
@@ -1912,7 +1910,7 @@ window.addEventListener('unhandledrejection',function(e){
  try{toast('⚠ Something broke','['+window.UL_BUILD+'] '+String(e.reason&&e.reason.message||e.reason).slice(0,140),'bad')}catch(x){}
 });
 (function(){var el=document.querySelector('.brand-sub')||document.querySelector('.who');
- if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v9.6.3</span>')})();
+ if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v9.7</span>')})();
 </script>
 <script>
 /* ═════════ THEMES — 6 palettes, one tap, remembered per device ═════════ */
@@ -2473,7 +2471,7 @@ document.addEventListener('keydown',function(e){
  if(e.key==='/'){e.preventDefault();var s=document.querySelector('#gsr input,#topsearch,input[placeholder*="Search"]');if(s)s.focus();return}
  if(e.key==='g'){__gPrimed=Date.now();return}
  if(__gPrimed&&Date.now()-__gPrimed<900){
-  var map={m:'myreqs',a:'approvals',t:'hires',r:'hr',p:'pipeline',l:'loop',i:'interviews',o:'offers',b:'onboarding',u:'admin',s:'reports',d:'audit'};
+  var map={m:'myreqs',a:'approvals',t:'hires',r:'hr',p:'pipeline',l:'loop',i:'interviews',o:'offers',b:'onboard',u:'admin',s:'reports',d:'audit'};
   if(map[e.key]){e.preventDefault();go(map[e.key]);toast('⌨','Jumped to '+map[e.key],'good')}
   __gPrimed=0}});
 }
@@ -2524,7 +2522,7 @@ document.body.insertAdjacentHTML('beforeend','<div id="cko" onclick="if(event.ta
  '<input id="ck-i" placeholder="Jump anywhere… (type to filter)" oninput="ckF()" onkeydown="ckK(event)"><div id="ck-l"></div></div></div>');
 var CK=[['📋','My Requests','myreqs'],['✅','Approvals','approvals'],['👥','My Team','hires'],
  ['🎯','Pipeline','pipeline'],['⚡','Screening Loop','loop'],['🗓','Interviews','interviews'],
- ['💼','Offers','offers'],['🚀','Onboarding','onboarding'],['📑','Requisitions','hr'],
+ ['💼','Offers','offers'],['🚀','Onboarding','onboard'],['📑','Requisitions','hr'],
  ['👤','Users & Org','admin'],['📊','Reports','reports'],['🧾','Audit trail','audit'],['✦','Ask','ask']];
 function ckO(){$('cko').classList.add('on');$('ck-i').value='';ckF();setTimeout(function(){$('ck-i').focus()},40)}
 function ckX(){$('cko').classList.remove('on')}
@@ -2539,7 +2537,7 @@ function ckK(e){if(e.key==='Escape')return ckX();
   var n=all[(i+(e.key==='ArrowDown'?1:-1)+all.length)%all.length];if(n){n.classList.add('sel');n.scrollIntoView({block:'nearest'})}}}
 function ckGo(p){ckX();go(p)}
 document.addEventListener('keydown',function(e){
- if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();if(TK&&B)ckO()}});
+ if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){if(document.getElementById('palo'))return;e.preventDefault();if(TK&&B)ckO()}});
 }
 </script>
 <script>
@@ -2560,7 +2558,6 @@ if(!window.__NOGOOG){window.__NOGOOG=1;
 </script>
 <style>#gbtn{display:none!important}</style>
 </body>
-</html>
 <script>
 if(!window.__BRAND46){window.__BRAND46=1;
 function brandSave(){var u=$('ms-appurl').value.trim(),f=$('ms-mailfrom').value.trim();
@@ -2570,3 +2567,4 @@ function brandSave(){var u=$('ms-appurl').value.trim(),f=$('ms-mailfrom').value.
    toast('Saved','Invites and notifications now use this link'+(f?' and sender':'')+'.','good')})})}
 }
 </script>
+</html>
