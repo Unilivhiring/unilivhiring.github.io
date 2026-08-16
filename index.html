@@ -361,7 +361,7 @@ body{min-height:100dvh;background:#0D0B14}
 .card:has(table)::before{display:none}
 .top{background:rgba(13,11,20,.9)!important}
 #p-audit .card,#p-reports .card{transform:none!important}
-</style></head>
+</style><style>#p-admin td button,#p-admin td a.ghost{margin:2px 6px 2px 0}</style></head>
 <body>
 <div id="gate">
   <div class="gcard">
@@ -985,7 +985,7 @@ function admList(){api('api_adminList',[TK],function(L){window._adm=L;
   $('adm-body').innerHTML=L.map(function(u,i){
     return '<tr><td><b>'+esc(u.name)+'</b><br><span class="reqcode">'+esc(u.email)+'</span>'+(u.active?'':' <span class="pill p-REJECTED">off</span>')+'</td>'+
     '<td style="font-size:11px">'+u.roles.join('<br>')+'</td><td class="reqcode">'+esc(u.reportsTo||'—')+'</td>'+
-    '<td style="white-space:nowrap;vertical-align:middle"><button class="ghost" style="padding:5px 10px;font-size:11px" onclick="admEdit('+i+')">Edit</button> '+
+    '<td style="vertical-align:middle;min-width:190px"><button class="ghost" style="padding:5px 10px;font-size:11px" onclick="admEdit('+i+')">Edit</button> '+
     '<button class="ghost" style="padding:5px 10px;font-size:11px" onclick="admReset(\''+esc(u.email)+'\')">Reset pw</button>'+
     ((window._meta&&u.email===(window._meta.owner||''))||(B&&B.me&&u.email===B.me.email)?'':' <button class="ghost" style="padding:5px 10px;font-size:11px;border-color:var(--ember);color:var(--ember)" onclick="admDel(\''+esc(u.email)+'\',\''+esc(u.name)+'\')">Remove</button>')+
     '</td></tr>'}).join('')})}
@@ -1903,7 +1903,7 @@ api=function(fn,args,ok,fail){
 </script>
 
 <script>
-window.UL_BUILD='v9.6.2';
+window.UL_BUILD='v9.6.3';
 console.log('UniLiv Hiring build',window.UL_BUILD);
 window.addEventListener('error',function(e){
  try{toast('⚠ Something broke','['+window.UL_BUILD+'] '+String(e.message).slice(0,140),'bad')}catch(x){}
@@ -1912,7 +1912,7 @@ window.addEventListener('unhandledrejection',function(e){
  try{toast('⚠ Something broke','['+window.UL_BUILD+'] '+String(e.reason&&e.reason.message||e.reason).slice(0,140),'bad')}catch(x){}
 });
 (function(){var el=document.querySelector('.brand-sub')||document.querySelector('.who');
- if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v9.6.2</span>')})();
+ if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v9.6.3</span>')})();
 </script>
 <script>
 /* ═════════ THEMES — 6 palettes, one tap, remembered per device ═════════ */
