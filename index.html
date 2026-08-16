@@ -1772,6 +1772,7 @@ function scoreDlg(intId){var iv=(X.interviews||[]).filter(function(i){return i.i
  var c=iv?candOf(iv.candId):null;var rq=c?findReq(c.reqId):null;
  var crit=(X&&X.criteria&&rq)?(X.criteria[rq.dept]||X.criteria._default):null;
  var CR=crit||SCRIT;
+ window.__scrCR=CR; /* #30: remember labels so the stored scorecard is self-describing */
  dlg('<h3>Scorecard</h3><p>Locks on submit. A No needs ≥50 characters of why.</p>'+
  CR.map(function(cr,i){return '<div class="f"><label>'+esc(cr)+' (1–5)</label><input id="sc'+i+'" type="number" min="1" max="5"></div>'}).join('')+
  '<div class="f"><label>Verdict</label><div class="chips" id="sv">'+
@@ -1780,7 +1781,7 @@ function scoreDlg(intId){var iv=(X.interviews||[]).filter(function(i){return i.i
  '<div class="f"><label>Comments</label><textarea id="sc-cm" rows="2"></textarea></div>',
  '<button class="ghost" onclick="dclose()">Cancel</button><button class="btn" onclick="score2x(\''+intId+'\','+CR.length+')">Submit & lock</button>')}
 function score2x(intId,n){var v=getPick('sv');if(!v){toast('One thing','Pick a verdict.','bad');return}
- var crit=[];for(var i=0;i<n;i++)crit.push({stars:Number($('sc'+i).value)||0});
+ var crit=[];var _cn=window.__scrCR||[];for(var i=0;i<n;i++)crit.push({name:_cn[i]||('Criterion '+(i+1)),stars:Number($('sc'+i).value)||0});
  api('api_scoreSave',[TK,intId,crit,v,$('sc-cm').value],
   function(){dclose();toast('Submitted ✓','Locked.','good');refresh()},function(m){toast('Fix one thing',m,'bad')})}
 
@@ -1882,7 +1883,7 @@ var _askGo=askGo;var lastAskQ='';
 askGo=function(){var q=$('ask-q').value.trim();
  if(/^(and|what about|aur|uska)/i.test(q)&&lastAskQ)$('ask-q').value=lastAskQ.split(' ').slice(0,3).join(' ')+' '+q.replace(/^(and|what about|aur|uska)\s*/i,'');
  lastAskQ=$('ask-q').value;_askGo()};
-var _origApiAskRender=null;
+/* #33: removed unused _origApiAskRender declaration */
 // render bars when chart flag present: patch by wrapping api for api_ask
 var _api=api;
 api=function(fn,args,ok,fail){
@@ -1898,7 +1899,7 @@ api=function(fn,args,ok,fail){
 </script>
 
 <script>
-window.UL_BUILD='v9.6.3';
+window.UL_BUILD='v10.3';
 console.log('UniLiv Hiring build',window.UL_BUILD);
 window.addEventListener('error',function(e){
  try{toast('⚠ Something broke','['+window.UL_BUILD+'] '+String(e.message).slice(0,140),'bad')}catch(x){}
@@ -1907,7 +1908,7 @@ window.addEventListener('unhandledrejection',function(e){
  try{toast('⚠ Something broke','['+window.UL_BUILD+'] '+String(e.reason&&e.reason.message||e.reason).slice(0,140),'bad')}catch(x){}
 });
 (function(){var el=document.querySelector('.brand-sub')||document.querySelector('.who');
- if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v9.7</span>')})();
+ if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v10.3</span>')})();
 </script>
 <script>
 /* ═════════ THEMES — 6 palettes, one tap, remembered per device ═════════ */
