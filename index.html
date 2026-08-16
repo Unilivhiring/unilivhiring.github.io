@@ -1087,6 +1087,11 @@ function renderOB(){if(!X)return;var L=X.onboardings||[];
     if(B.isHR){h+='<div class="f" style="margin-top:10px"><label>Checklist '+done+'/'+items.length+'</label><div class="chips">'+
       items.map(function(it){var d=ck[it[0]]&&ck[it[0]].done;
         return '<span class="chip2'+(d?' on':'')+'" onclick="obTog(\''+o.id+'\',\''+it[0]+'\','+!d+')">'+esc(it[1])+'</span>'}).join('')+'</div></div>';
+      if(o.joinedAt){h+='<div class="row" style="margin-top:8px;flex-wrap:wrap">'+
+        (o.apptLetter?'<a class="ghost" style="text-decoration:none" target="_blank" href="'+esc(o.apptLetter)+'">📄 Appointment letter ✓</a>'
+          :'<button class="ghost" onclick="obLet(\''+o.id+'\',\'APPT\')">📄 Appointment letter</button>')+
+        (o.confirmedAt?' <span class="pill p-CLOSED_FILLED">✓ Confirmed '+new Date(o.confirmedAt).toDateString()+'</span>'
+          :' <button class="ghost" style="border-color:var(--sage);color:var(--sage)" onclick="obLet(\''+o.id+'\',\'CONF\')">🎓 Confirm employment</button>')+'</div>'}
       if(!o.joinedAt)h+='<div class="row"><button class="btn" onclick="joinDlg(\''+o.id+'\')">✅ Mark as Joined</button>'+
         '<button class="danger" onclick="dnjDlg(\''+o.id+'\')">Did not join</button></div>'}
     if(o.joinedAt&&o.probation==='RUNNING'){
@@ -1704,7 +1709,7 @@ api=function(fn,args,ok,fail){
 </script>
 
 <script>
-window.UL_BUILD='v6.0';
+window.UL_BUILD='v6.1';
 console.log('UniLiv Hiring build',window.UL_BUILD);
 window.addEventListener('error',function(e){
  try{toast('⚠ Something broke','['+window.UL_BUILD+'] '+String(e.message).slice(0,140),'bad')}catch(x){}
@@ -1713,7 +1718,7 @@ window.addEventListener('unhandledrejection',function(e){
  try{toast('⚠ Something broke','['+window.UL_BUILD+'] '+String(e.reason&&e.reason.message||e.reason).slice(0,140),'bad')}catch(x){}
 });
 (function(){var el=document.querySelector('.brand-sub')||document.querySelector('.who');
- if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v6.0</span>')})();
+ if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v6.1</span>')})();
 </script>
 <script>
 /* ═════════ THEMES — 6 palettes, one tap, remembered per device ═════════ */
@@ -2218,6 +2223,34 @@ function bkRun(b){b.disabled=true;b.textContent='Backing up…';
  api('api_backup',[TK],function(r){b.disabled=false;b.textContent='Back up now';
   $('bk-out').textContent='✓ '+r.name+' — in your Drive.';toast('Backed up',r.name,'good')},
  function(m){b.disabled=false;b.textContent='Back up now';toast('Backup failed',m,'bad')})}
+}
+</script>
+<script>
+if(!window.__V61){window.__V61=1;
+function obLet(id,kind){var conf=kind==='CONF';
+ dlg('<h3>'+(conf?'Confirm employment':'Appointment letter')+'</h3>'+
+ '<p class="reqmeta">'+(conf?'Probation cleared — this issues the confirmation, updates the record, and emails the letter.':'Attach the signed appointment letter; the joiner gets it by email and it stays on their record.')+'</p>'+
+ '<div class="chips" id="ol">'+(conf?'<span class="chip2 on" data-v="AUTO" onclick="setPick(\'ol\',\'AUTO\');this.classList.add(\'on\');olUi()">Auto-generate (template)</span>':'')+
+ '<span class="chip2'+(conf?'':' on')+'" data-v="LINK" onclick="setPick(\'ol\',\'LINK\');this.classList.add(\'on\');olUi()">Drive/Docs link</span>'+
+ '<span class="chip2" data-v="FILE" onclick="setPick(\'ol\',\'FILE\');this.classList.add(\'on\');olUi()">Upload PDF</span></div>'+
+ '<div class="f" id="ol-link" style="display:'+(conf?'none':'block')+';margin-top:10px"><label>Letter link</label><input id="ol-url" placeholder="https://…"><div class="hint">Sharing: “Anyone with the link – Viewer”.</div></div>'+
+ '<div class="f" id="ol-file" style="display:none;margin-top:10px"><label>PDF (≤5 MB)</label><input type="file" id="ol-f" accept=".pdf"></div>',
+ '<button class="ghost" onclick="dclose()">Cancel</button><button class="btn" onclick="obLet2(\''+id+'\',\''+kind+'\')">'+(conf?'Confirm & send':'Send letter')+'</button>')}
+function olUi(){var v=getPick('ol');$('ol-link').style.display=v==='LINK'?'block':'none';$('ol-file').style.display=v==='FILE'?'block':'none'}
+function obLet2(id,kind){var v=getPick('ol')||'LINK';
+ var go=function(lo){dclose();toast('Working…','');
+  api('api_obLetter',[TK,id,kind,lo],function(r){
+   toast(kind==='CONF'?'Confirmed 🎉':'Letter sent','On record & emailed.','good');window.__xdirty=1;go2ob()},
+  function(m){toast('Not done',m,'bad')})};
+ function go2ob(){api('api_bootExtra',[TK],function(x){X=x;renderOB()})}
+ if(v==='AUTO')return go(null);
+ if(v==='LINK'){var u=$('ol-url').value.trim();
+  if(u.indexOf('https://')!==0){toast('Check the link','It must start with https://','bad');return}
+  return go({url:u})}
+ var f=$('ol-f').files[0];
+ if(!f){toast('Pick the PDF','Choose the letter file first.','bad');return}
+ if(f.size>5*1024*1024){toast('Too big','Keep it under 5 MB.','bad');return}
+ var rd=new FileReader();rd.onload=function(){go({b64:rd.result,type:f.type})};rd.readAsDataURL(f)}
 }
 </script>
 </body>
