@@ -1605,7 +1605,11 @@ function score2x(intId,n){var v=getPick('sv');if(!v){toast('One thing','Pick a v
 var _candDrawer3=candDrawer;
 candDrawer=function(id){_candDrawer3(id);var c=candOf(id);if(!c||!c.phone)return;
  var acts=document.querySelector('#dlg .row');if(acts)
- acts.insertAdjacentHTML('beforeend',' <button class="ghost" onclick="aiReach(\''+id+'\')">✦ Draft outreach</button>')};
+ acts.insertAdjacentHTML('beforeend',' <button class="ghost" onclick="aiReach(\''+id+'\')">✦ Draft outreach</button> <button class="ghost" onclick="ctl(\''+id+'\')">🕐 Timeline</button>')};
+function ctl(id){api('api_candTimeline',[TK,id],function(L){
+ dlg('<h3>🕐 Timeline</h3><div style="max-height:340px;overflow:auto">'+(L.length?L.map(function(e){
+  return '<div style="padding:7px 0;border-bottom:1px solid var(--edge);font-size:12px"><span class="reqcode">'+new Date(e.at).toLocaleString()+'</span> · <b>'+esc(e.what)+'</b>'+(e.to?' → '+esc(e.to):'')+(e.note?'<div class="reqmeta">'+esc(e.note)+'</div>':'')+'<div class="reqmeta">by '+esc(e.who)+'</div></div>'}).join(''):'<div class="empty">No events yet.</div>')+'</div>',
+ '<button class="btn" onclick="dclose()">Close</button>')},function(m){toast('No timeline',m,'bad')})}
 function aiReach(id){toast('✦ Drafting…','');
  api('api_ai',[TK,'outreach',id,''],function(r){var c=candOf(id);
   window._aiTxt=r.text;
@@ -1711,7 +1715,7 @@ api=function(fn,args,ok,fail){
 </script>
 
 <script>
-window.UL_BUILD='v7.0';
+window.UL_BUILD='v7.1';
 console.log('UniLiv Hiring build',window.UL_BUILD);
 window.addEventListener('error',function(e){
  try{toast('⚠ Something broke','['+window.UL_BUILD+'] '+String(e.message).slice(0,140),'bad')}catch(x){}
@@ -1720,7 +1724,7 @@ window.addEventListener('unhandledrejection',function(e){
  try{toast('⚠ Something broke','['+window.UL_BUILD+'] '+String(e.reason&&e.reason.message||e.reason).slice(0,140),'bad')}catch(x){}
 });
 (function(){var el=document.querySelector('.brand-sub')||document.querySelector('.who');
- if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v7.0</span>')})();
+ if(el)el.insertAdjacentHTML('beforeend',' <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--txt3);letter-spacing:.1em" title="build">v7.1</span>')})();
 </script>
 <script>
 /* ═════════ THEMES — 6 palettes, one tap, remembered per device ═════════ */
